@@ -1,22 +1,6 @@
-# Pro-GNN 
+# Central-GNN 
 
-A PyTorch implementation of "Graph Structure Learning for Robust Graph Neural Networks" (KDD 2020). [[paper]](https://arxiv.org/abs/2005.10203) [[slides]](http://cse.msu.edu/~jinwei2/files/Slides_ProGNN.pdf)
-
-The code is based on our Pytorch adversarial repository, DeepRobust [(https://github.com/DSE-MSU/DeepRobust)](https://github.com/DSE-MSU/DeepRobust)
-
-<div align=center><img src="https://raw.githubusercontent.com/ChandlerBang/Pro-GNN/master/ProGNN.png" width="700"/></div>
-
-Note
-----
-Although in the original paper we did not provide the results on large-scale graphs, we encourage researchers to test your model on attacked large graphs. DeepRobust has provided APIs to perform scalable attacks and you can find an example in [test_prbcd.py](https://github.com/DSE-MSU/DeepRobust/blob/master/examples/graph/test_prbcd.py). 
-
-Another example is in our [ICLR'23 code](https://github.com/ChandlerBang/GTrans#robustness) where we tested our model robustness on the large attacked ogb-arxiv graph. 
-
-Please feel free to open an issue if you have any questions :)
-
-
-## Abstract 
-Graph Neural Networks (GNNs) are powerful tools in representation learning for graphs. However, recent studies show that GNNs are vulnerable to carefully-crafted perturbations, called adversarial attacks. Adversarial attacks can easily fool GNNs in making predictions for downstream tasks. The vulnerability to adversarial attacks has raised increasing concerns for applying GNNs in safety-critical applications. Therefore, developing robust algorithms to defend adversarial attacks is of great significance. A natural idea to defend adversarial attacks is to clean the perturbed graph. It is evident that real-world graphs share some intrinsic properties. For example, many real-world graphs are low-rank and sparse, and the features of two adjacent nodes tend to be similar. In fact, we find that adversarial attacks are likely to violate these graph properties. Therefore, in this paper, we explore these properties to defend adversarial attacks on graphs. In particular, we propose a general framework Pro-GNN, which can jointly learn a structural graph and a robust graph neural network model from the perturbed graph guided by these properties. Extensive experiments on real-world graphs demonstrate that the proposed framework achieves significantly better performance compared with the state-of-the-art defense methods, even when the graph is heavily perturbed.
+The code is based on a Pytorch adversarial repository, DeepRobust [(https://github.com/DSE-MSU/DeepRobust)](https://github.com/DSE-MSU/DeepRobust)
 
 ## Requirements
 See that in https://github.com/DSE-MSU/DeepRobust/blob/master/requirements.txt
@@ -48,43 +32,7 @@ python setup.py install
 ```
 
 ## Run the code
-After installation, you can clone this repository
 ```
-git clone https://github.com/ChandlerBang/Pro-GNN.git
-cd Pro-GNN
-python train.py --dataset polblogs --attack meta --ptb_rate 0.15 --epoch 1000
-```
-
-## Reproduce the results
-All the hyper-parameters settings are included in [`scripts`](https://github.com/ChandlerBang/Pro-GNN/tree/master/scripts) folder. Note that same hyper-parameters are used under different perturbation for the same dataset. 
-
-To reproduce the performance reported in the paper, you can run the bash files in folder `scripts`.
-```
-sh scripts/meta/cora_meta.sh
-```
-To test performance under different severity of attack, you can change the `ptb_rate` in those bash files.
-
-<!--
-**IMPORTANT NOTICE** For the performance of Pubmed dataset, if you don't add the code (line 59-62 in `train.py`), the performance of GCN should be around 85 since the data splits are different from what I used in the paper. See details in https://github.com/ChandlerBang/Pro-GNN/issues/2
--->
-
-## Generate attack by yourself
-With the help of DeepRobust, you can run the following code to generate meta attack
-```
-python generate_attack.py --dataset cora --ptb_rate 0.05 --seed 15
-```
-
-## Cite
-For more information, you can take a look at the [paper](https://arxiv.org/abs/2005.10203) or the detailed [code](https://github.com/DSE-MSU/DeepRobust/blob/master/deeprobust/graph/defense/prognn.py) shown in DeepRobust.
-
-If you find this repo to be useful, please cite our paper. Thank you.
-```
-@inproceedings{jin2020graph,
-  title={Graph Structure Learning for Robust Graph Neural Networks},
-  author={Jin, Wei and Ma, Yao and Liu, Xiaorui and Tang, Xianfeng and Wang, Suhang and Tang, Jiliang},
-  booktitle={26th ACM SIGKDD International Conference on Knowledge Discovery and Data Mining, KDD 2020},
-  pages={66--74},
-  year={2020},
-  organization={Association for Computing Machinery}
-}
+cd Central-GNN
+python train.py --dataset polblogs --attack meta --ptb_rate 0.1
 ```

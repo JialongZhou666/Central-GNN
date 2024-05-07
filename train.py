@@ -2,9 +2,10 @@ import time
 import argparse
 import numpy as np
 import torch
-from deeprobust.graph.defense import GCN, ProGNN
+from deeprobust.graph.defense import GCN
 from deeprobust.graph.data import Dataset, PrePtbDataset
 from deeprobust.graph.utils import preprocess, encode_onehot, get_train_val_test
+from centralgnn import CentralGNN
 
 # Training settings
 parser = argparse.ArgumentParser()
@@ -28,11 +29,10 @@ parser.add_argument('--dataset', type=str, default='cora',
 parser.add_argument('--attack', type=str, default='meta',
         choices=['no', 'meta', 'random', 'nettack'])
 parser.add_argument('--ptb_rate', type=float, default=0.05, help="noise ptb_rate")
-parser.add_argument('--epochs', type=int,  default=400, help='Number of epochs to train.')
-parser.add_argument('--alpha', type=float, default=5e-4, help='weight of l1 norm')
-parser.add_argument('--beta', type=float, default=1.5, help='weight of nuclear norm')
-parser.add_argument('--gamma', type=float, default=1, help='weight of l2 norm')
-parser.add_argument('--lambda_', type=float, default=0, help='weight of feature smoothing')
+parser.add_argument('--epochs', type=int,  default=1000, help='Number of epochs to train.')
+parser.add_argument('--alpha', type=float, default=5e-4, help='Coefficients for proximal gradient descent')
+parser.add_argument('--beta', type=float, default=1.5, help='weight of centrality loss')
+parser.add_argument('--gamma', type=float, default=1, help='weight of gcn loss')
 parser.add_argument('--phi', type=float, default=0, help='weight of symmetric loss')
 parser.add_argument('--inner_steps', type=int, default=2, help='steps for inner optimization')
 parser.add_argument('--outer_steps', type=int, default=1, help='steps for outer optimization')
@@ -62,17 +62,6 @@ idx_train, idx_val, idx_test = data.idx_train, data.idx_val, data.idx_test
 if args.attack == 'no':
     perturbed_adj = adj
 
-if args.attack == 'random':
-    from deeprobust.graph.global_attack import Random
-    # to fix the seed of generated random attack, you need to fix both np.random and random
-    # you can uncomment the following code
-    # import random; random.seed(args.seed)
-    # np.random.seed(args.seed)
-    attacker = Random()
-    n_perturbations = int(args.ptb_rate * (adj.sum()//2))
-    attacker.attack(adj, n_perturbations, type='add')
-    perturbed_adj = attacker.modified_adj
-
 if args.attack == 'meta' or args.attack == 'nettack':
     perturbed_data = PrePtbDataset(root='/tmp/',
             name=args.dataset,
@@ -96,7 +85,7 @@ if args.only_gcn:
     model.test(idx_test)
 else:
     perturbed_adj, features, labels = preprocess(perturbed_adj, features, labels, preprocess_adj=False, device=device)
-    prognn = ProGNN(model, args, device)
-    prognn.fit(features, perturbed_adj, labels, idx_train, idx_val)
-    prognn.test(features, labels, idx_test)
+    centralgnn = CentralGNN(model, args, device)
+    centralgnn.fit(features, perturbed_adj, labels, idx_train, idx_val)
+    centralgnn.test(features, labels, idx_test)
 
