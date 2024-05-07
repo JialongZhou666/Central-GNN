@@ -19,18 +19,6 @@ skimage==0.0
 tensorboardX==2.0
 ```
 
-## Installation
-To run the code, first you need to install DeepRobust:
-```
-pip install deeprobust
-```
-Or you can clone it and install from source code:
-```
-git clone https://github.com/DSE-MSU/DeepRobust.git
-cd DeepRobust
-python setup.py install
-```
-
 ## Run the code
 ```
 cd Central-GNN
