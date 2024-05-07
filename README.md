@@ -1,5 +1,4 @@
-# Central-GNN 
-
+# Central-GNN
 The code is based on a Pytorch adversarial repository, DeepRobust [(https://github.com/DSE-MSU/DeepRobust)](https://github.com/DSE-MSU/DeepRobust)
 
 ## Requirements
@@ -22,5 +21,5 @@ tensorboardX==2.0
 ## Run the code
 ```
 cd Central-GNN
-python train.py --dataset polblogs --attack meta --ptb_rate 0.1
+python train.py --dataset polblogs --attack meta --ptb_rate 0.1 --epochs 1000
 ```
